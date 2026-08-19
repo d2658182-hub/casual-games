@@ -1,0 +1,1590 @@
+/* ============================================================
+   CANDY RUSH — stylesheet
+   Candy pastel theme, fully responsive (clamp / vw based),
+   layered background composition, zero overlap by design.
+   ============================================================ */
+
+/* Candy display font (Kenney, CC0) */
+@font-face {
+  font-family: 'Kenney Mini Square';
+  src: url('../fonts/Kenney Mini Square.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+  background: #ffe9f5;
+  overscroll-behavior: none;
+}
+
+#game-root {
+  position: fixed;
+  inset: 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ============================================================
+   SCREEN + BACKGROUND SCENE (layered candy background)
+   ============================================================ */
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  animation: screen-in 0.35s ease-out both;
+}
+
+/* Content above the background scene (explicit positioning wins over
+   the generic rule below — never force position on absolutely placed
+   children like the canvas / HUD / overlays). */
+.screen > .menu-content,
+.screen > .loading-content,
+.screen > .panel {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes screen-in {
+  from { opacity: 0; transform: scale(1.02); }
+  to { opacity: 1; transform: none; }
+}
+
+.bg-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #ffe3f1 0%, #fff3e0 32%, #e6f6ff 66%, #eaf9f0 100%);
+}
+
+.bg-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(46px);
+  opacity: 0.55;
+}
+
+.bg-blob-a {
+  width: 52vmax;
+  height: 52vmax;
+  top: -18vmax;
+  left: -14vmax;
+  background: radial-gradient(circle, #ffd0ea 0%, rgba(255, 208, 234, 0) 70%);
+  animation: blob-float 14s ease-in-out infinite alternate;
+}
+
+.bg-blob-b {
+  width: 46vmax;
+  height: 46vmax;
+  bottom: -16vmax;
+  right: -12vmax;
+  background: radial-gradient(circle, #c9f3e0 0%, rgba(201, 243, 224, 0) 70%);
+  animation: blob-float 17s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes blob-float {
+  from { transform: translateY(-2vmax) rotate(-4deg); }
+  to { transform: translateY(2vmax) rotate(5deg); }
+}
+
+.bg-sun {
+  position: absolute;
+  top: 6%;
+  left: 7%;
+  width: clamp(64px, 15vw, 130px);
+  opacity: 0.95;
+  animation: sun-pulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes sun-pulse {
+  from { transform: scale(1) rotate(-6deg); }
+  to { transform: scale(1.06) rotate(4deg); }
+}
+
+.bg-clouds {
+  position: absolute;
+  top: 12%;
+  right: -6%;
+  width: clamp(300px, 62vw, 660px);
+  opacity: 0.55;
+  animation: drift-x 24s ease-in-out infinite alternate;
+}
+
+.bg-cloud {
+  position: absolute;
+  opacity: 0.6;
+}
+
+.bg-cloud-a {
+  top: 30%;
+  left: 4%;
+  width: clamp(70px, 16vw, 150px);
+  animation: drift-x 19s ease-in-out infinite alternate-reverse;
+}
+
+.bg-cloud-b {
+  top: 48%;
+  right: 6%;
+  width: clamp(80px, 18vw, 170px);
+  animation: drift-x 22s ease-in-out infinite alternate;
+}
+
+@keyframes drift-x {
+  from { transform: translateX(-18px); }
+  to { transform: translateX(18px); }
+}
+
+/* ============================================================
+   BUTTONS (pack images, Kenney UI)
+   ============================================================ */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.1s ease, filter 0.15s ease;
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+.btn:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+.btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+}
+
+.btn .btn-label,
+.btn .btn-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Kenney Mini Square', 'Segoe UI', system-ui, Arial, sans-serif;
+  color: #fff;
+  font-weight: normal;
+  letter-spacing: 0.08em;
+  text-shadow: 0 2px 0 rgba(122, 60, 0, 0.9), 0 3px 8px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+
+.btn .btn-label {
+  font-size: clamp(15px, 3.4vw, 22px);
+}
+
+.btn .btn-icon {
+  font-size: clamp(16px, 4vw, 26px);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6));
+}
+
+.btn-primary {
+  width: clamp(170px, 46vw, 260px);
+}
+
+.btn-primary .btn-label {
+  font-size: clamp(18px, 4vw, 26px);
+}
+
+.btn-secondary {
+  width: clamp(150px, 40vw, 220px);
+}
+
+.btn-back {
+  width: clamp(150px, 40vw, 220px);
+}
+
+.btn-square {
+  width: clamp(44px, 10vw, 64px);
+}
+
+.btn-square .btn-label {
+  font-size: clamp(12px, 2.6vw, 16px);
+}
+
+.btn-play {
+  width: clamp(180px, 52vw, 290px);
+}
+
+.btn-play .btn-label {
+  font-size: clamp(20px, 5vw, 30px);
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.btn-owned img {
+  filter: saturate(0.4) brightness(1.05);
+}
+
+.btn,
+.panel {
+  opacity: 0;
+}
+
+.ui-ready {
+  opacity: 1;
+  transition: opacity 0.18s ease;
+}
+
+/* ============================================================
+   PANELS
+   ============================================================ */
+
+.panel {
+  position: relative;
+  /* block flow : the panel grows with its content and scrolls inside
+     its max-height (flex + overflow used to cut the top of tall lists) */
+  display: block;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  max-height: 94vh;
+  overflow-y: auto;
+}
+
+.panel-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 2vw, 14px);
+  padding: clamp(16px, 4vh, 40px) clamp(18px, 4.5vw, 30px);
+  text-align: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ============================================================
+   LOADING SCREEN
+   ============================================================ */
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 3.4vw, 26px);
+  width: min(90vw, 480px);
+}
+
+.loading-bar {
+  position: relative;
+  width: min(72vw, 440px);
+  height: clamp(18px, 4.6vw, 34px);
+  background: url('../ui/bar_2.png') no-repeat center / 100% 100%;
+}
+
+.loading-fill {
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  background: url('../ui/bar_1.png') no-repeat left center / 100% 100%;
+  transition: width 0.15s linear;
+}
+
+.loading-text {
+  font-size: clamp(12px, 3vw, 16px);
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  letter-spacing: 0.14em;
+  color: #ffe3b0;
+  text-shadow: 0 2px 0 rgba(122, 60, 0, 0.9), 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================
+   MAIN MENU
+   ============================================================ */
+
+.menu-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 2vw, 14px);
+  width: min(90vw, 480px);
+  z-index: 1;
+}
+
+.game-title {
+  font-family: 'Kenney Mini Square', 'Segoe UI', system-ui, Arial, sans-serif;
+  font-size: clamp(38px, 10.5vw, 82px);
+  letter-spacing: 0.04em;
+  color: #fff;
+  text-shadow:
+    0 3px 0 rgba(244, 91, 175, 0.85),
+    0 5px 0 rgba(74, 43, 62, 0.55),
+    0 10px 24px rgba(74, 43, 62, 0.4);
+  text-align: center;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+
+.menu-best {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: clamp(0px, 1.4vw, 10px);
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(14px, 3.6vw, 20px);
+  color: #fff;
+  letter-spacing: 0.06em;
+  text-shadow: 0 2px 0 rgba(122, 60, 0, 0.8), 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.menu-best img {
+  width: clamp(20px, 5vw, 30px);
+  height: auto;
+}
+
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(10px, 2.4vw, 16px);
+  margin-top: clamp(8px, 2vw, 14px);
+}
+
+.menu-sound {
+  position: absolute;
+  top: calc(clamp(10px, 2.6vw, 20px) + env(safe-area-inset-top));
+  right: clamp(10px, 2.6vw, 20px);
+  z-index: 2;
+}
+
+.menu-deco {
+  position: absolute;
+  top: 16%;
+  pointer-events: none;
+  opacity: 0.95;
+  animation: deco-bob 3.2s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+.menu-deco-left {
+  left: 3%;
+}
+
+.menu-deco-right {
+  right: 3%;
+  animation-delay: 1.2s;
+}
+
+.menu-deco img {
+  width: clamp(52px, 15vw, 108px);
+  height: auto;
+  filter: drop-shadow(0 6px 14px rgba(74, 43, 62, 0.28));
+}
+
+@keyframes deco-bob {
+  from { transform: translateY(-6px) rotate(-5deg); }
+  to { transform: translateY(6px) rotate(5deg); }
+}
+
+/* ============================================================
+   GAMEPLAY
+   ============================================================ */
+
+.gameplay-screen {
+  padding: 0;
+}
+
+.game-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+  touch-action: none;
+}
+
+.gameplay-hud {
+  position: absolute;
+  top: calc(clamp(8px, 2vw, 16px) + env(safe-area-inset-top));
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(6px, 2vw, 14px);
+  padding: 0 clamp(12px, 3vw, 22px);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.gameplay-hud .btn {
+  pointer-events: auto;
+}
+
+.hud-left,
+.hud-right {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 2vw, 12px);
+  flex-shrink: 0;
+}
+
+.hud-score {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hud-score img {
+  width: clamp(24px, 5.6vw, 36px);
+  height: auto;
+}
+
+.hud-score-value {
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(18px, 4.4vw, 28px);
+  color: #fff;
+  text-shadow: 0 3px 0 rgba(122, 60, 0, 0.85), 0 6px 14px rgba(0, 0, 0, 0.5);
+}
+
+.hud-hearts {
+  display: flex;
+  gap: clamp(3px, 0.9vw, 6px);
+}
+
+.hud-hearts img {
+  width: clamp(19px, 4.4vw, 28px);
+  height: auto;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.hud-hearts img.heart-lost {
+  transform: scale(0.8) rotate(-12deg);
+  opacity: 0.3;
+}
+
+.combo-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: clamp(3px, 0.9vw, 6px) clamp(10px, 2.4vw, 18px);
+  border-radius: 999px;
+  background: rgba(74, 43, 62, 0.55);
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(12px, 3vw, 17px);
+  letter-spacing: 0.08em;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  animation: pill-pulse 1.1s ease-in-out infinite;
+}
+
+.combo-pill b {
+  color: #ffd23f;
+  font-size: 1.15em;
+}
+
+@keyframes pill-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.07); }
+}
+
+/* Bottom control bar : ◀ ▶ on their own row ABOVE the 4 color buttons
+   (bigger, more spaced = comfortable on a phone) */
+.game-controls {
+  position: absolute;
+  bottom: calc(clamp(8px, 2vw, 14px) + env(safe-area-inset-bottom));
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 2.2vw, 14px);
+  padding: 0 clamp(6px, 2vw, 16px);
+  z-index: 4;
+  pointer-events: none;
+}
+
+.game-controls .ctl-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 5vw, 34px);
+  pointer-events: none;
+}
+
+.game-controls .ctl-btn {
+  pointer-events: auto;
+}
+
+/* move arrows : bigger, spread apart (more space between ◀ and ▶) */
+.ctl-row-move .ctl-arrow {
+  width: clamp(58px, 17vw, 92px);
+  height: clamp(58px, 17vw, 92px);
+}
+
+.game-controls .ctl-row-move {
+  gap: clamp(44px, 17vw, 110px);
+}
+
+/* color buttons : medium, one per color */
+.ctl-row-colors {
+  gap: clamp(12px, 4.4vw, 26px);
+}
+
+.ctl-btn {
+  width: clamp(46px, 13vw, 74px);
+  height: clamp(46px, 13vw, 74px);
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 5px 0 rgba(74, 43, 62, 0.22), 0 10px 22px rgba(74, 43, 62, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 0.08s ease, box-shadow 0.15s ease;
+}
+
+.ctl-btn:active {
+  transform: scale(0.9);
+}
+
+.ctl-arrow {
+  background: linear-gradient(180deg, #ffffff 0%, #ffe9f2 60%, #ffd6ea 100%);
+}
+
+.ctl-arrow svg {
+  width: 52%;
+  height: 52%;
+  filter: drop-shadow(0 2px 2px rgba(255, 255, 255, 0.8));
+}
+
+.ctl-color .ctl-dot {
+  width: 62%;
+  height: 62%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 42%);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+}
+
+.ctl-color.active {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.95), 0 0 24px 6px var(--glow, rgba(255, 255, 255, 0.9)), 0 6px 0 rgba(74, 43, 62, 0.22);
+  animation: ctl-pop 0.55s ease-in-out infinite alternate;
+}
+
+@keyframes ctl-pop {
+  from { transform: scale(1.06); }
+  to { transform: scale(1.14); }
+}
+
+/* Pause overlay (in-game) */
+.pause-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(74, 43, 62, 0.45);
+}
+
+.pause-card {
+  width: min(84vw, 400px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(10px, 2.4vw, 16px);
+  padding: clamp(22px, 6vw, 40px) clamp(16px, 4vw, 28px);
+  background: url('../ui/f.png') no-repeat center / 100% 100%;
+}
+
+/* ============================================================
+   GAME OVER
+   ============================================================ */
+
+.gameover-screen .panel {
+  width: min(88vw, 440px);
+}
+
+.modal-title {
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(24px, 6vw, 38px);
+  letter-spacing: 0.05em;
+  color: #fff;
+  text-shadow: 0 3px 0 rgba(160, 60, 0, 0.95), 0 6px 14px rgba(0, 0, 0, 0.5);
+}
+
+.modal-title.title-new-best {
+  color: #ffd23f;
+  animation: new-best-bounce 0.7s ease-in-out infinite alternate;
+}
+
+@keyframes new-best-bounce {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+.modal-stars {
+  display: flex;
+  gap: clamp(6px, 1.6vw, 10px);
+}
+
+.modal-stars img {
+  width: clamp(28px, 7vw, 44px);
+  height: auto;
+}
+
+.modal-score,
+.modal-coins {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-score img,
+.modal-coins img {
+  width: clamp(24px, 5.6vw, 34px);
+  height: auto;
+}
+
+.modal-score span {
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(26px, 7vw, 44px);
+  color: #fff;
+  text-shadow: 0 3px 0 rgba(122, 60, 0, 0.9), 0 6px 14px rgba(0, 0, 0, 0.5);
+}
+
+.modal-coins span {
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(18px, 4.6vw, 28px);
+  color: #ffe3b0;
+  text-shadow: 0 2px 0 rgba(122, 60, 0, 0.9), 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.modal-best {
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(12px, 2.8vw, 16px);
+  color: #ffe3b0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* Video icon inside the REVIVE button (watch an ad to come back) */
+.btn-video-icon {
+  width: 1.3em;
+  height: 1.3em;
+  margin-right: 8px;
+  vertical-align: -0.28em;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   SHOP
+   ============================================================ */
+
+/* The shop has NO panel image asset (f.png was too small and the items
+   overflowed it). A plain translucent card contains the whole list and
+   scrolls : nothing can ever spill out of it. */
+.shop-panel {
+  position: relative;
+  z-index: 1;
+  width: min(92vw, 460px);
+  max-height: 92vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 14px 40px rgba(122, 60, 90, 0.3), inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.shop-coins {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-weight: normal;
+  font-size: clamp(16px, 4vw, 22px);
+  text-shadow: 0 2px 0 rgba(122, 60, 0, 0.9), 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.shop-coins img {
+  width: clamp(24px, 5.5vw, 34px);
+  height: auto;
+}
+
+.shop-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 12px);
+  width: 100%;
+}
+
+.shop-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: clamp(6px, 1.5vw, 10px);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.65);
+}
+
+.shop-item-icon {
+  width: clamp(30px, 7vw, 46px);
+  height: clamp(30px, 7vw, 46px);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.75);
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 6px rgba(74, 43, 62, 0.15);
+}
+
+.shop-item-icon img {
+  width: 74%;
+  height: 74%;
+  object-fit: contain;
+}
+
+.shop-item-name {
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(12px, 3vw, 16px);
+  color: #5b3a4e;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  flex: 1;
+  text-align: left;
+}
+
+.shop-item-price {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(12px, 3vw, 15px);
+  color: #5b3a4e;
+}
+
+.shop-item-price img {
+  width: clamp(18px, 4vw, 24px);
+  height: auto;
+}
+
+.shop-item .btn-secondary {
+  width: clamp(84px, 24vw, 130px);
+  flex-shrink: 0;
+}
+
+.shop-item .btn-secondary .btn-label {
+  font-size: clamp(11px, 2.6vw, 15px);
+}
+
+.shop-item.owned {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(160, 233, 160, 0.5);
+}
+
+.shop-toast {
+  position: absolute;
+  bottom: calc(9% + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: rgba(74, 43, 62, 0.88);
+  color: #fff;
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(13px, 3.2vw, 17px);
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.shop-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+/* ============================================================
+   GAMEPLAY — level HUD (objective bar, level tag, FEVER)
+   ============================================================ */
+
+.hud-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* Objective progress bar — own row under the HUD, never overlaps */
+.objective-wrap {
+  position: absolute;
+  top: calc(clamp(52px, 11vw, 84px) + env(safe-area-inset-top));
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  padding: 0 clamp(10px, 3vw, 22px);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.objective-bar {
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 1.4vw, 8px);
+  padding: clamp(3px, 0.9vw, 6px) clamp(8px, 2vw, 14px);
+  border-radius: 999px;
+  background: rgba(74, 43, 62, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  max-width: 78vw;
+}
+
+.objective-label {
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(10px, 2.4vw, 14px);
+  letter-spacing: 0.08em;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+
+.objective-track {
+  width: clamp(56px, 16vw, 150px);
+  height: clamp(8px, 1.9vw, 12px);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.35);
+  overflow: hidden;
+  flex-shrink: 1;
+}
+
+.objective-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ff9ed8, #ffd23f);
+  transition: width 0.2s ease;
+}
+
+.objective-wrap.objective-done .objective-fill {
+  background: linear-gradient(90deg, #7dffb0, #3ecfa0);
+}
+
+.objective-value {
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(10px, 2.4vw, 14px);
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+
+/* Level number badge (HUD left) */
+.level-tag {
+  width: clamp(28px, 6.4vw, 42px);
+  height: clamp(28px, 6.4vw, 42px);
+  border-radius: 50%;
+  background: linear-gradient(180deg, #ffffff, #ffe3f1);
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 0 rgba(74, 43, 62, 0.22), 0 6px 12px rgba(74, 43, 62, 0.16);
+  flex-shrink: 0;
+}
+
+.level-tag-num {
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(12px, 2.8vw, 17px);
+  color: #7a4a66;
+}
+
+/* FEVER pill */
+.fever-pill {
+  padding: 3px clamp(10px, 2.4vw, 16px);
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ff9ed8, #c77dff);
+  border: 2px solid #fff;
+  color: #fff;
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(12px, 3vw, 16px);
+  letter-spacing: 0.08em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  animation: fever-pulse 0.45s ease-in-out infinite alternate;
+}
+
+@keyframes fever-pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.14); }
+}
+
+/* ============================================================
+   MENU — daily reward banner
+   ============================================================ */
+
+.btn-daily {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 1.6vw, 12px);
+  margin-top: clamp(8px, 2vw, 14px);
+  padding: clamp(6px, 1.6vw, 10px) clamp(14px, 3.4vw, 22px);
+  position: relative;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ffd23f, #ff9ed8);
+  border: 3px solid #fff;
+  color: #fff;
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(12px, 3vw, 16px);
+  letter-spacing: 0.05em;
+  text-shadow: 0 2px 0 rgba(122, 60, 0, 0.85);
+  box-shadow: 0 4px 14px rgba(74, 43, 62, 0.28);
+  cursor: pointer;
+  animation: daily-bounce 1.2s ease-in-out infinite alternate;
+}
+
+.btn-daily .daily-gift {
+  font-size: 1.4em;
+}
+
+/* small play/video icon : the daily reward is earned by watching an ad */
+.btn-daily .daily-video {
+  width: 1.1em;
+  height: 1.1em;
+  margin-right: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='29' fill='%23ffffff' stroke='%23f45baf' stroke-width='5'/%3E%3Cpath d='M26 20.5 45 32 26 43.5z' fill='%23f45baf'/%3E%3C/svg%3E") no-repeat center / contain;
+  flex-shrink: 0;
+}
+
+.btn-daily .daily-claim {
+  background: #fff;
+  color: #e0852b;
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 0.85em;
+  text-shadow: none;
+}
+
+.btn-daily.claimed {
+  animation: none;
+  filter: saturate(0.55) brightness(0.98);
+}
+
+@keyframes daily-bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-4px); }
+}
+
+/* ============================================================
+   VICTORY screen
+   ============================================================ */
+
+/* Celebration confetti : CC0 spritesheet pieces falling from the top.
+   Behind the panel (z-index 1 vs panel 1 later in DOM), above the bg. */
+.confetti-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -70px;
+  opacity: 0;
+  will-change: transform;
+  animation-name: confetti-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes confetti-fall {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0; }
+  8% { opacity: 0.95; }
+  100% { transform: translate3d(var(--sway, 30px), 118vh, 0) rotate(var(--spin, 540deg)); opacity: 0.85; }
+}
+
+.victory-screen .panel {
+  width: min(88vw, 440px);
+}
+
+.victory-title {
+  color: #ffd23f;
+}
+
+.victory-world {
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(13px, 3vw, 18px);
+  color: #fff;
+  letter-spacing: 0.06em;
+  text-shadow: 0 2px 0 rgba(122, 60, 0, 0.8), 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+.victory-stars img {
+  width: clamp(34px, 8vw, 56px);
+  opacity: 0;
+}
+
+.victory-stars img.star-pop {
+  animation: star-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes star-pop {
+  0% { transform: scale(0) rotate(-30deg); opacity: 0; }
+  70% { transform: scale(1.25) rotate(6deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.victory-toast {
+  position: absolute;
+  bottom: calc(12% + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: rgba(74, 43, 62, 0.92);
+  color: #fff;
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(13px, 3.2vw, 17px);
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.victory-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.gameover-level {
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(11px, 2.6vw, 15px);
+  color: #ffe3b0;
+  letter-spacing: 0.05em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* ============================================================
+   LEVEL SELECT
+   ============================================================ */
+
+.levels-head {
+  position: absolute;
+  top: calc(clamp(8px, 2.2vw, 16px) + env(safe-area-inset-top));
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 clamp(10px, 2.6vw, 18px);
+  z-index: 2;
+}
+
+.levels-head .modal-title {
+  font-size: clamp(20px, 5vw, 30px);
+}
+
+/* HOME button in the level-select head : small round icon, it must not
+   cover the title or the world rows below */
+.levels-head .btn-back {
+  width: clamp(40px, 10vw, 56px);
+  height: clamp(40px, 10vw, 56px);
+  min-width: 0;
+}
+
+.levels-head .btn-back .btn-label {
+  font-size: clamp(11px, 2.6vw, 15px);
+}
+
+/* ============================================================
+   WORLD MAP — winding path of the 10 worlds
+   ============================================================ */
+
+.world-map-scroll {
+  position: absolute;
+  top: calc(clamp(64px, 10vw, 92px) + env(safe-area-inset-top));
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  padding: 10px clamp(10px, 2.6vw, 20px) 30px;
+  z-index: 1;
+  -webkit-overflow-scrolling: touch;
+}
+
+.world-map-path {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 2vw, 14px);
+  padding-bottom: 20px;
+}
+
+.world-map-start {
+  font-size: clamp(22px, 6vw, 32px);
+  filter: drop-shadow(0 3px 4px rgba(74, 43, 62, 0.35));
+}
+
+/* dotted connectors between the worlds, curved by the zigzag */
+.world-map-link {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 2px 0;
+}
+
+.world-map-link i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 1px 3px rgba(74, 43, 62, 0.3);
+}
+
+.world-node {
+  position: relative;
+  width: clamp(148px, 38vw, 210px);
+  min-height: clamp(84px, 22vw, 112px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border-radius: 26px;
+  border: 4px solid #fff;
+  background: linear-gradient(135deg, var(--w1), var(--w2));
+  color: #5b3a4e;
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  box-shadow: 0 6px 0 rgba(74, 43, 62, 0.25), 0 14px 28px rgba(74, 43, 62, 0.22);
+  cursor: pointer;
+  transition: transform 0.08s ease;
+}
+
+.world-node:active {
+  transform: scale(0.94);
+}
+
+.world-node.locked {
+  background: linear-gradient(135deg, #e8e2e6, #d9d2d8);
+  color: #a99fa6;
+  box-shadow: 0 4px 0 rgba(74, 43, 62, 0.18);
+  cursor: default;
+}
+
+/* zigzag the nodes so the path feels like a journey : a clear
+   left / right swing that fits even on narrow phones. The nodes
+   are interspersed with link dots, so we count buttons only. */
+.world-map-path > .world-node:nth-of-type(odd) {
+  align-self: flex-start;
+  margin-left: clamp(0px, 2vw, 14px);
+}
+
+.world-map-path > .world-node:nth-of-type(even) {
+  align-self: flex-end;
+  margin-right: clamp(0px, 2vw, 14px);
+}
+
+.world-node-badge {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: clamp(26px, 7vw, 34px);
+  height: clamp(26px, 7vw, 34px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid rgba(122, 60, 90, 0.35);
+  font-size: clamp(13px, 3.4vw, 17px);
+  font-weight: bold;
+  color: #7a4a66;
+}
+
+.world-node-name {
+  font-size: clamp(13px, 3.4vw, 18px);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+  padding: 0 8px;
+  text-align: center;
+}
+
+.world-node-stars {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: clamp(11px, 2.8vw, 14px);
+  color: #e0852b;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.world-node-stars img {
+  width: clamp(15px, 3.8vw, 20px);
+  height: auto;
+}
+
+.world-node-lock {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: clamp(14px, 3.6vw, 18px);
+  opacity: 0.8;
+}
+
+.world-node-done {
+  position: absolute;
+  top: -12px;
+  right: -8px;
+  font-size: clamp(18px, 4.6vw, 24px);
+  filter: drop-shadow(0 2px 3px rgba(74, 43, 62, 0.35));
+}
+
+/* world view : the 15 levels of the selected world */
+.world-levels {
+  position: absolute;
+  top: calc(clamp(64px, 10vw, 92px) + env(safe-area-inset-top));
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  padding: 6px clamp(12px, 3vw, 24px) 30px;
+  z-index: 1;
+  -webkit-overflow-scrolling: touch;
+}
+
+.world-levels-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 4px 0 12px;
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(14px, 3.6vw, 19px);
+  color: #7a4a66;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.world-levels-info img {
+  width: clamp(18px, 4.4vw, 24px);
+  height: auto;
+}
+
+.levels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(clamp(44px, 11vw, 66px), 1fr));
+  gap: clamp(6px, 1.6vw, 10px);
+}
+
+.level-btn {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 16px;
+  border: 3px solid #fff;
+  background: linear-gradient(180deg, #ffffff, #ffe9f2);
+  color: #7a4a66;
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(14px, 3.4vw, 20px);
+  box-shadow: 0 4px 0 rgba(74, 43, 62, 0.22);
+  cursor: pointer;
+  transition: transform 0.08s ease;
+}
+
+.level-btn:active {
+  transform: scale(0.92);
+}
+
+.level-btn.locked {
+  background: linear-gradient(180deg, #e8e2e6, #d9d2d8);
+  color: #a99fa6;
+  box-shadow: none;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.level-btn-stars {
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: clamp(9px, 2.2vw, 13px);
+  color: #f5a300;
+  letter-spacing: 1px;
+}
+
+.level-btn-lock {
+  font-size: clamp(12px, 3vw, 16px);
+}
+
+/* BOSS level (15th of each world) : golden frame + crown */
+.level-btn.boss {
+  border-color: #f5c542;
+  background: linear-gradient(180deg, #fffbe8, #ffe9a8);
+  box-shadow: 0 4px 0 rgba(180, 120, 10, 0.35), 0 0 14px rgba(245, 197, 66, 0.55);
+}
+
+.level-btn.boss.locked {
+  background: linear-gradient(180deg, #e8e2e6, #d9d2d8);
+  box-shadow: none;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.level-btn-crown {
+  position: absolute;
+  top: -12px;
+  right: -8px;
+  font-size: clamp(15px, 3.8vw, 21px);
+  filter: drop-shadow(0 2px 2px rgba(74, 43, 62, 0.4));
+}
+
+/* ============================================================
+   SHOP — video unlock section
+   ============================================================ */
+
+.shop-section-label {
+  align-self: flex-start;
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(12px, 3vw, 16px);
+  color: #fff;
+  letter-spacing: 0.1em;
+  text-shadow: 0 2px 0 rgba(122, 60, 0, 0.8);
+  margin-top: 4px;
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(clamp(120px, 30vw, 170px), 1fr));
+  gap: clamp(8px, 2vw, 12px);
+  width: 100%;
+}
+
+.video-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 8px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.45);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+.video-card.owned {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.video-card.equipped {
+  border-color: #ffd23f;
+  box-shadow: 0 0 12px rgba(255, 210, 63, 0.45);
+}
+
+.video-card-icon {
+  font-size: clamp(26px, 7vw, 40px);
+  line-height: 1;
+}
+
+.video-card-name {
+  font-family: 'Kenney Mini Square', 'Segoe UI', sans-serif;
+  font-size: clamp(10px, 2.6vw, 14px);
+  color: #5b3a4e;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  min-height: 2.2em;
+  display: flex;
+  align-items: center;
+}
+
+.video-card .btn-secondary {
+  width: clamp(84px, 24vw, 120px);
+  flex-shrink: 0;
+}
+
+.video-card .btn-secondary .btn-label {
+  font-size: clamp(10px, 2.4vw, 13px);
+}
+
+/* ============================================================
+   SMALL SCREENS — keep everything inside the viewport
+   ============================================================ */
+
+@media (max-width: 360px) {
+  .game-title {
+    font-size: clamp(30px, 9.5vw, 40px);
+  }
+
+  .menu-deco-left { left: 1%; }
+  .menu-deco-right { right: 1%; }
+
+  .menu-deco img {
+    width: clamp(44px, 13vw, 60px);
+  }
+}
+
+@media (max-height: 560px) and (orientation: landscape) {
+  .menu-deco { display: none; }
+
+  .game-title {
+    font-size: clamp(28px, 7vh, 46px);
+  }
+
+  .menu-content {
+    gap: 6px;
+  }
+
+  .menu-buttons {
+    flex-direction: row;
+    gap: clamp(8px, 2vw, 16px);
+    margin-top: 6px;
+  }
+
+  .panel {
+    max-height: 96vh;
+  }
+
+  .panel-content {
+    gap: clamp(6px, 1.6vh, 10px);
+    padding: clamp(10px, 2.6vh, 24px) clamp(14px, 3.4vw, 24px);
+  }
+
+  .modal-title {
+    font-size: clamp(18px, 5.4vh, 26px);
+  }
+
+  .modal-stars img {
+    width: clamp(20px, 6vh, 30px);
+  }
+
+  .modal-score span {
+    font-size: clamp(20px, 6.4vh, 30px);
+  }
+
+  .modal-best {
+    font-size: clamp(10px, 2.6vh, 13px);
+  }
+
+  .gameover-screen .panel,
+  .shop-screen .panel {
+    width: min(72vw, 420px);
+  }
+
+  .ctl-btn {
+    width: clamp(40px, 8.6vh, 52px);
+    height: clamp(40px, 8.6vh, 52px);
+    border-width: 2px;
+  }
+
+  .ctl-row-move .ctl-arrow {
+    width: clamp(48px, 11vh, 64px);
+    height: clamp(48px, 11vh, 64px);
+  }
+
+  .game-controls .ctl-row-move {
+    gap: clamp(28px, 11vh, 60px);
+  }
+
+  .game-controls {
+    bottom: calc(6px + env(safe-area-inset-bottom));
+    gap: clamp(4px, 1.4vh, 8px);
+  }
+
+  .objective-wrap {
+    top: calc(clamp(40px, 9vh, 58px) + env(safe-area-inset-top));
+  }
+
+  .objective-track {
+    width: clamp(48px, 13vw, 110px);
+  }
+
+  .victory-screen .panel,
+  .gameover-screen .panel {
+    width: min(78vw, 470px);
+  }
+
+  .victory-stars img {
+    width: clamp(22px, 6vh, 34px);
+  }
+
+  .levels-scroll {
+    top: calc(clamp(56px, 8vh, 74px) + env(safe-area-inset-top));
+  }
+
+  .level-btn {
+    border-radius: 12px;
+  }
+
+  .video-card {
+    padding: 6px;
+  }
+
+  .video-card-icon {
+    font-size: clamp(20px, 5vh, 28px);
+  }
+
+  .shop-list {
+    gap: clamp(4px, 1.2vh, 8px);
+  }
+
+  .shop-item {
+    padding: clamp(3px, 1vh, 8px);
+  }
+
+  .pause-card {
+    max-height: 92vh;
+    overflow-y: auto;
+    padding: clamp(12px, 3vh, 26px) clamp(14px, 3.4vw, 24px);
+  }
+
+  .pause-card .modal-title {
+    font-size: clamp(18px, 5.4vh, 26px);
+  }
+}

@@ -1,0 +1,742 @@
+/* ============================================================
+   TEMPLATE STYLESHEET — layout only.
+   Visuals (buttons, panels, coins, stars) come from the
+   pack images in assets/ui/. Nothing is drawn here.
+   ============================================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+  background: #0a0516;
+  overscroll-behavior: none;
+}
+
+#game-root {
+  position: fixed;
+  inset: 0;
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  animation: screen-in 0.35s ease-out both;
+}
+
+@keyframes screen-in {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ============================================================
+   BUTTONS (pack images)
+   ============================================================ */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.1s ease, filter 0.15s ease;
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+.btn:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+.btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+}
+
+.btn .btn-label,
+.btn .btn-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-shadow: 0 2px 0 rgba(122, 60, 0, 0.9), 0 3px 8px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+
+.btn .btn-label {
+  font-size: clamp(15px, 3.4vw, 22px);
+}
+
+.btn .btn-icon {
+  font-size: clamp(16px, 4vw, 26px);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6));
+}
+
+.btn-primary {
+  width: clamp(170px, 46vw, 260px);
+}
+
+.btn-primary .btn-label {
+  font-size: clamp(18px, 4vw, 26px);
+}
+
+.btn-secondary {
+  width: clamp(150px, 40vw, 220px);
+}
+
+.btn-back {
+  width: clamp(150px, 40vw, 220px);
+}
+
+.btn-square {
+  width: clamp(44px, 10vw, 64px);
+}
+
+.btn-square .btn-label {
+  font-size: clamp(12px, 2.6vw, 16px);
+}
+
+.btn-play {
+  width: clamp(180px, 52vw, 290px);
+}
+
+.btn-play .btn-label {
+  font-size: clamp(20px, 5vw, 30px);
+}
+
+.btn,
+.panel {
+  opacity: 0;
+}
+
+.ui-ready {
+  opacity: 1;
+  transition: opacity 0.18s ease;
+}
+
+/* ============================================================
+   PANELS (pack images)
+   ============================================================ */
+
+.panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.panel-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 2vw, 14px);
+  padding: clamp(18px, 5vw, 32px);
+  text-align: center;
+}
+
+/* ============================================================
+   LOADING SCREEN
+   ============================================================ */
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 3.4vw, 26px);
+  width: min(90vw, 480px);
+}
+
+.loading-bar {
+  position: relative;
+  width: min(72vw, 440px);
+  height: clamp(18px, 4.6vw, 34px);
+  background: url('../ui/bar_2.png') no-repeat center / 100% 100%;
+}
+
+.loading-fill {
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  background: url('../ui/bar_1.png') no-repeat left center / 100% 100%;
+  transition: width 0.15s linear;
+}
+
+.loading-text {
+  font-size: clamp(12px, 3vw, 16px);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #ffe3b0;
+  text-shadow: 0 2px 0 rgba(122, 60, 0, 0.9), 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================
+   SCREEN 1 — MAIN MENU
+   ============================================================ */
+
+.menu-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(10px, 2.6vw, 18px);
+  width: min(90vw, 480px);
+}
+
+.game-title {
+  font-size: clamp(40px, 11vw, 84px);
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: #fff;
+  text-shadow:
+    0 3px 0 rgba(160, 80, 0, 0.95),
+    0 5px 0 rgba(90, 40, 0, 0.85),
+    0 10px 24px rgba(0, 0, 0, 0.55);
+  text-align: center;
+  line-height: 1.05;
+}
+
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(10px, 2.4vw, 16px);
+  margin-top: clamp(8px, 2vw, 14px);
+}
+
+.menu-sound {
+  position: absolute;
+  top: clamp(10px, 2.6vw, 20px);
+  right: clamp(10px, 2.6vw, 20px);
+}
+
+/* ============================================================
+   GAMEPLAY SCREEN
+   ============================================================ */
+
+.gameplay-screen {
+  padding: 0;
+}
+
+.game-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+.gameplay-hud {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.gameplay-hud .btn,
+.gameplay-hud .pwr-btn {
+  pointer-events: auto;
+}
+
+.hud-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(10px, 2.4vw, 18px) clamp(12px, 3vw, 22px);
+}
+
+.hud-stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud-stat img {
+  width: clamp(28px, 6.5vw, 42px);
+  height: auto;
+}
+
+.hud-score-value {
+  font-size: clamp(20px, 5vw, 32px);
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 3px 0 rgba(122, 60, 0, 0.9), 0 6px 14px rgba(0, 0, 0, 0.5);
+}
+
+.hud-target {
+  font-size: clamp(14px, 3.6vw, 22px);
+  font-weight: 800;
+  color: #ffe3b0;
+  text-shadow: 0 2px 0 rgba(122, 60, 0, 0.9);
+}
+
+.hud-level {
+  font-size: clamp(16px, 4vw, 26px);
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.05em;
+  text-shadow: 0 3px 0 rgba(122, 60, 0, 0.9), 0 6px 14px rgba(0, 0, 0, 0.5);
+}
+
+.hud-timer {
+  position: relative;
+  margin: 0 clamp(12px, 3vw, 22px);
+  height: clamp(16px, 3.4vw, 22px);
+  background: url('../ui/bar_2.png') no-repeat center / 100% 100%;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.hud-timer-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  background: url('../ui/bar_1.png') no-repeat left center / 100% 100%;
+  transition: width 0.15s linear;
+}
+
+.hud-timer-fill.low {
+  filter: hue-rotate(-40deg) saturate(1.5) brightness(1.15);
+}
+
+.hud-combo {
+  position: absolute;
+  top: 36%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(26px, 7vw, 48px);
+  font-weight: 900;
+  color: #ffe08a;
+  text-shadow: 0 3px 0 rgba(160, 60, 0, 0.95), 0 8px 18px rgba(0, 0, 0, 0.55);
+  animation: combo-pop 0.25s ease-out;
+  pointer-events: none;
+}
+
+@keyframes combo-pop {
+  from { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+.level-banner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.level-banner.show {
+  animation: level-banner-in 1.9s ease-out forwards;
+}
+
+.level-banner-level {
+  font-size: clamp(42px, 13vw, 76px);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  color: #fff;
+  text-shadow: 0 4px 0 rgba(160, 80, 0, 0.95), 0 8px 0 rgba(90, 40, 0, 0.85), 0 14px 30px rgba(0, 0, 0, 0.55);
+}
+
+.level-banner-sub {
+  font-size: clamp(16px, 5vw, 28px);
+  font-weight: 800;
+  color: #ffe08a;
+  text-shadow: 0 2px 0 rgba(160, 60, 0, 0.95), 0 6px 16px rgba(0, 0, 0, 0.55);
+}
+
+@keyframes level-banner-in {
+  0% { opacity: 0; transform: scale(0.6); }
+  12% { opacity: 1; transform: scale(1.06); }
+  20% { opacity: 1; transform: scale(1); }
+  75% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.04); }
+}
+
+.hud-powerups {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  gap: clamp(8px, 2vw, 16px);
+  padding: 0 clamp(10px, 2.6vw, 20px) clamp(12px, 3vw, 22px);
+}
+
+.pwr-btn {
+  position: relative;
+  width: clamp(48px, 12vw, 72px);
+  height: clamp(48px, 12vw, 72px);
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 3px 0 rgba(160, 80, 0, 0.55), 0 8px 16px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: transform 0.1s ease, filter 0.15s ease;
+}
+
+.pwr-btn:active {
+  transform: scale(0.94);
+}
+
+.pwr-btn img {
+  width: 72%;
+  height: 72%;
+  object-fit: contain;
+}
+
+.pwr-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #e8485b;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.pwr-btn.empty {
+  filter: grayscale(0.7);
+  opacity: 0.65;
+}
+
+.menu-stats {
+  position: absolute;
+  top: clamp(10px, 2.6vw, 20px);
+  left: clamp(10px, 2.6vw, 20px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.menu-coins,
+.menu-level {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: clamp(16px, 4vw, 24px);
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 2px 0 rgba(122, 60, 0, 0.9), 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.menu-coins img {
+  width: clamp(24px, 5.5vw, 34px);
+  height: auto;
+}
+
+.shop-item-icon {
+  width: clamp(40px, 10vw, 64px);
+  height: clamp(40px, 10vw, 64px);
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.shop-item-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.shop-item-name {
+  font-size: clamp(13px, 3.2vw, 17px);
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.shop-item-desc {
+  font-size: clamp(10px, 2.4vw, 13px);
+  font-weight: 700;
+  color: #ffe3b0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.shop-item-owned {
+  font-size: clamp(10px, 2.4vw, 12px);
+  font-weight: 700;
+  color: #bff5cf;
+}
+
+.shop-item-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.shop-item-actions .btn {
+  flex: 1;
+  width: auto;
+}
+
+.shop-item .btn-label {
+  font-size: clamp(10px, 2.4vw, 13px);
+}
+
+/* ============================================================
+   PAUSE SCREEN
+   ============================================================ */
+
+.pause-screen .panel {
+  width: min(82vw, 400px);
+  aspect-ratio: 1600 / 1170;
+}
+
+.pause-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+/* ============================================================
+   GAME OVER SCREEN
+   ============================================================ */
+
+.gameover-screen .panel {
+  width: min(86vw, 430px);
+  aspect-ratio: 1600 / 1170;
+}
+
+.modal-title {
+  font-size: clamp(24px, 6vw, 38px);
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: #fff;
+  text-shadow: 0 3px 0 rgba(160, 60, 0, 0.95), 0 6px 14px rgba(0, 0, 0, 0.5);
+}
+
+.modal-subtitle {
+  font-size: clamp(12px, 3vw, 16px);
+  font-weight: 700;
+  color: #ffe3b0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.modal-stars {
+  display: flex;
+  gap: clamp(6px, 1.6vw, 10px);
+}
+
+.modal-stars img {
+  width: clamp(28px, 7vw, 44px);
+  height: auto;
+}
+
+.modal-score {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-score img {
+  width: clamp(26px, 6vw, 38px);
+  height: auto;
+}
+
+.modal-score span {
+  font-size: clamp(26px, 7vw, 44px);
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 3px 0 rgba(122, 60, 0, 0.9), 0 6px 14px rgba(0, 0, 0, 0.5);
+}
+
+.modal-best {
+  font-size: clamp(12px, 2.8vw, 16px);
+  font-weight: 700;
+  color: #ffe3b0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* ============================================================
+   VICTORY SCREEN
+   ============================================================ */
+
+.victory-screen .panel {
+  width: min(82vw, 400px);
+  aspect-ratio: 1600 / 1170;
+}
+
+.confetti-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ============================================================
+   SHOP SCREEN (optional)
+   ============================================================ */
+
+.shop-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 2vw, 14px);
+  width: min(88vw, 460px);
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: clamp(10px, 3vw, 18px);
+  text-align: center;
+}
+
+.shop-coins {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-weight: 800;
+  font-size: clamp(16px, 4vw, 22px);
+  text-shadow: 0 2px 0 rgba(122, 60, 0, 0.9), 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.shop-coins img {
+  width: clamp(24px, 5.5vw, 34px);
+  height: auto;
+}
+
+.shop-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 12px);
+  width: 100%;
+}
+
+.shop-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: clamp(6px, 1.5vw, 10px);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.shop-item-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shop-item-name {
+  font-size: clamp(12px, 3vw, 16px);
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.shop-item-price {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: clamp(12px, 3vw, 15px);
+  font-weight: 800;
+  color: #ffe3b0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.shop-item-price img {
+  width: clamp(18px, 4vw, 24px);
+  height: auto;
+}
+
+.shop-item .btn-secondary {
+  width: clamp(80px, 22vw, 120px);
+}
+
+.shop-item .btn-secondary .btn-label {
+  font-size: clamp(11px, 2.6vw, 15px);
+}
+
+/* ============================================================
+   DESKTOP / LANDSCAPE — centered portrait frame
+   The draw-a-line gameplay is naturally vertical, so on wide
+   screens we keep the game in a centered 9:16 frame and fill the
+   sides with a blurred, darkened version of the themed background
+   (no black bars). Portrait / mobile stays full-screen.
+   ============================================================ */
+
+@media (orientation: landscape) {
+  body::before {
+    content: '';
+    position: fixed;
+    inset: -60px;
+    z-index: 0;
+    background: url('../screens/menu-bg.png') center / cover no-repeat;
+    filter: blur(20px) brightness(0.5) saturate(1.15);
+  }
+
+  #game-root {
+    z-index: 1;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    height: 100vh;
+    aspect-ratio: 9 / 16;
+    max-width: 100vw;
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);
+  }
+}
