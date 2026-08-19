@@ -15,14 +15,17 @@ class GameOverScreen extends BaseScreen {
     this.el.style.backgroundImage = `url("${this.game.config.backgrounds.menu}")`;
 
     const panel = new Panel({ image: 'assets/ui/f.png' });
-    panel.add(
+    const buttons = [
       this.titleEl('GAME OVER'),
       this.scoreEl(score),
       this.bestEl(best),
       this.buttonEl('RETRY', 'primary', () => this.retry()),
-      this.buttonEl('CONTINUE +15s', 'secondary', () => this.continueRun()),
-      this.buttonEl('MENU', 'back', () => this.menu())
-    );
+    ];
+    if (typeof SDK !== 'undefined' && SDK.available) {
+      buttons.push(this.buttonEl('CONTINUE +15s', 'secondary', () => this.continueRun()));
+    }
+    buttons.push(this.buttonEl('MENU', 'back', () => this.menu()));
+    panel.add(...buttons);
     this.el.appendChild(panel.el);
 
     this.onKeyDown((event) => {

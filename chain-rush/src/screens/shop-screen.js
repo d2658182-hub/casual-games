@@ -95,15 +95,17 @@ class ShopScreen extends BaseScreen {
     });
     actions.appendChild(buyButton.el);
 
-    const adButton = new Button({
-      label: 'WATCH AD',
-      variant: 'back',
-      ariaLabel: `Watch an ad to get ${item.name} for free`,
-      onClick: () => this.watchAd(item, row)
-    });
-    adButton.el.classList.add('btn-ad');
-    adButton.el.title = `Watch an ad to get ${item.name} for free`;
-    actions.appendChild(adButton.el);
+    if (typeof SDK !== 'undefined' && SDK.available) {
+      const adButton = new Button({
+        label: 'WATCH AD',
+        variant: 'back',
+        ariaLabel: `Watch an ad to get ${item.name} for free`,
+        onClick: () => this.watchAd(item, row)
+      });
+      adButton.el.classList.add('btn-ad');
+      adButton.el.title = `Watch an ad to get ${item.name} for free`;
+      actions.appendChild(adButton.el);
+    }
 
     row.appendChild(top);
     row.appendChild(actions);

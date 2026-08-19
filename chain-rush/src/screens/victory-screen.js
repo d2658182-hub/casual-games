@@ -31,14 +31,17 @@ class VictoryScreen extends BaseScreen {
     this.el.appendChild(this.canvas);
 
     const panel = new Panel({ image: 'assets/ui/f.png' });
-    panel.add(
+    const buttons = [
       this.titleEl('VICTORY'),
       this.starsEl(stars),
       this.scoreEl(score),
       this.coinsEl(coins),
       this.buttonEl('NEXT LEVEL', 'primary', () => this.nextLevel()),
-      this.buttonEl('DOUBLE COINS', 'secondary', () => this.doubleCoins(coins))
-    );
+    ];
+    if (typeof SDK !== 'undefined' && SDK.available) {
+      buttons.push(this.buttonEl('DOUBLE COINS', 'secondary', () => this.doubleCoins(coins)));
+    }
+    panel.add(...buttons);
     this.el.appendChild(panel.el);
 
     this.onKeyDown((event) => {

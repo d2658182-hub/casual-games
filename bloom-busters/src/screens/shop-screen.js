@@ -63,7 +63,7 @@ class ShopScreen extends BaseScreen {
         onClick: () => this.buy(item, buyButton)
       });
       actions.appendChild(buyButton.el);
-      if (item.watchAd) {
+      if (item.watchAd && typeof SDK !== 'undefined' && SDK.isAvailable()) {
         const adButton = new Button({
           label: 'WATCH AD',
           variant: 'back',
