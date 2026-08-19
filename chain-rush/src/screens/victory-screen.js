@@ -38,7 +38,7 @@ class VictoryScreen extends BaseScreen {
       this.coinsEl(coins),
       this.buttonEl('NEXT LEVEL', 'primary', () => this.nextLevel()),
     ];
-    if (typeof SDK !== 'undefined' && SDK.available) {
+    if (typeof SDK !== 'undefined' && typeof SDK.available === 'function') {
       buttons.push(this.buttonEl('DOUBLE COINS', 'secondary', () => this.doubleCoins(coins)));
     }
     panel.add(...buttons);

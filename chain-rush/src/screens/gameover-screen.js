@@ -21,7 +21,7 @@ class GameOverScreen extends BaseScreen {
       this.bestEl(best),
       this.buttonEl('RETRY', 'primary', () => this.retry()),
     ];
-    if (typeof SDK !== 'undefined' && SDK.available) {
+    if (typeof SDK !== 'undefined' && typeof SDK.available === 'function') {
       buttons.push(this.buttonEl('CONTINUE +15s', 'secondary', () => this.continueRun()));
     }
     buttons.push(this.buttonEl('MENU', 'back', () => this.menu()));

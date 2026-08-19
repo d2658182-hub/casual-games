@@ -51,8 +51,39 @@ const SDK = (function () {
       });
     }),
 
+    /* ---- gameplay lifecycle ---- */
+    gameplayStart: call(function (b) {
+      if (b && b.gameplay && typeof b.gameplay.start === 'function') {
+        try { b.gameplay.start(); } catch (e) {}
+      }
+    }),
+    gameplayPause: call(function (b) {
+      if (b && b.gameplay && typeof b.gameplay.pause === 'function') {
+        try { b.gameplay.pause(); } catch (e) {}
+      }
+    }),
+    gameplayResume: call(function (b) {
+      if (b && b.gameplay && typeof b.gameplay.resume === 'function') {
+        try { b.gameplay.resume(); } catch (e) {}
+      }
+    }),
+    gameplayStop: call(function (b) {
+      if (b && b.gameplay && typeof b.gameplay.stop === 'function') {
+        try { b.gameplay.stop(); } catch (e) {}
+      }
+    }),
+    gameplayFail: call(function (b) {
+      if (b && b.gameplay && typeof b.gameplay.fail === 'function') {
+        try { b.gameplay.fail(); } catch (e) {}
+      }
+    }),
+
     onPause: call(function (b, cb) {
       try { if (b) b.platform.on(b.EVENT_NAME.PAUSE_STATE_CHANGED, cb); } catch (e) {}
+    }),
+
+    onResume: call(function (b, cb) {
+      try { if (b) b.platform.on(b.EVENT_NAME.RESUME_STATE_CHANGED, cb); } catch (e) {}
     }),
 
     onAudio: call(function (b, cb) {

@@ -91,6 +91,13 @@ class LoadingScreen extends BaseScreen {
       img.src = src;
     });
 
+    /* watchdog: never let the game hang on a slow/blocked image */
+    setTimeout(() => {
+      if (loaded < total) {
+        for (let i = loaded; i < total; i += 1) done();
+      }
+    }, 25000);
+
     // Audio is preloaded in the background and does NOT block the progress bar
     // (some browsers never fire canplaythrough on a muted page).
     this.collectAudio().forEach((src) => {

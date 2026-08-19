@@ -95,7 +95,7 @@ class ShopScreen extends BaseScreen {
     });
     actions.appendChild(buyButton.el);
 
-    if (typeof SDK !== 'undefined' && SDK.available) {
+    if (typeof SDK !== 'undefined' && typeof SDK.available === 'function') {
       const adButton = new Button({
         label: 'WATCH AD',
         variant: 'back',

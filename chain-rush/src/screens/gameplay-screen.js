@@ -378,6 +378,7 @@ class GameplayScreen extends BaseScreen {
     this.updateHUD();
     this.showLevelIntro();
     this.sdk('level_started');
+    this.sdkStart();
   }
 
   /* Background theme changes every 50 levels (world 1..6). */
@@ -533,6 +534,7 @@ class GameplayScreen extends BaseScreen {
     this.running = true;
     this.ended = false;
     this.updateHUD();
+    this.sdkResume();
   }
 
   /* ---------- loop ---------- */
@@ -988,6 +990,7 @@ class GameplayScreen extends BaseScreen {
     this.game.ads.recordRun('win');
     this.game.resumeRun = false;
     this.sdk('level_completed');
+    this.sdkStop();
     this.game.ads.maybeInterstitial();
     this.game.show('victory', {
       score: this.score,
@@ -1014,6 +1017,7 @@ class GameplayScreen extends BaseScreen {
     this.game.run = this.serializeRun();
     this.game.resumeRun = false;
     this.sdk('level_failed');
+    this.sdkFail();
     this.game.ads.maybeInterstitial();
     this.game.show('gameover', { score: this.score, best, coins, level: this.level });
   }
@@ -1023,10 +1027,32 @@ class GameplayScreen extends BaseScreen {
     this.game.audio.click();
     this.game.resumeRun = true;
     this.game.run = this.serializeRun();
+    this.sdkPause();
     this.game.show('pause');
   }
 
+  /* ---- SDK lifecycle helpers ---- */
   sdk(name) {
     if (typeof SDK !== 'undefined') SDK.levelMessage(name);
+  }
+
+  sdkStart() {
+    if (typeof SDK !== 'undefined') SDK.gameplayStart();
+  }
+
+  sdkPause() {
+    if (typeof SDK !== 'undefined') SDK.gameplayPause();
+  }
+
+  sdkResume() {
+    if (typeof SDK !== 'undefined') SDK.gameplayResume();
+  }
+
+  sdkStop() {
+    if (typeof SDK !== 'undefined') SDK.gameplayStop();
+  }
+
+  sdkFail() {
+    if (typeof SDK !== 'undefined') SDK.gameplayFail();
   }
 }
